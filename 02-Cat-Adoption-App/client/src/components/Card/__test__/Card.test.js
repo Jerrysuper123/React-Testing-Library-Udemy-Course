@@ -1,78 +1,66 @@
 import { render, screen } from "@testing-library/react";
 import userEvents from "@testing-library/user-event";
-import Pets, { PetsContext } from "../../Pets/Pets";
 import Card from "../Card";
-import cats from "../../../mocks/cats.json";
 
 const cardProps = {
-  name: "Sydney",
-  phone: "111-111-1111",
-  email: "laith@hotmail.com",
+  name: "Tom",
+  phone: "11222",
+  email: "email@gmail.com",
   image: {
-    url: "https://images.unsplash.com/photo-1548247416-ec66f4900b2e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Y2F0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=1000&q=60",
+    url: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1143&q=80",
     alt: "cute cat",
   },
   favoured: false,
-  updateFavourite: () => {},
-  index: 1,
-};
-
-const renderCardComponentWithProvider = (props) => {
-  render(
-    <PetsContext.Provider value={{ cats, setCats: () => {} }}>
-      <Card {...props} />
-    </PetsContext.Provider>
-  );
 };
 
 describe("Card", () => {
-  test("should show name of cat", () => {
-    renderCardComponentWithProvider(cardProps);
+  test("name should exist", () => {
+    //use spread operator to fill in the props
+    render(<Card {...cardProps} />);
 
     expect(
       screen.getByRole("heading", {
-        name: /sydney/i,
+        name: /Tom/i,
       })
     ).toBeInTheDocument();
   });
 
-  test("should show phone number", () => {
-    renderCardComponentWithProvider(cardProps);
+  test("phone number should exist", () => {
+    render(<Card {...cardProps} />);
 
-    expect(screen.getByText(/111-111-1111/i)).toBeInTheDocument();
+    expect(screen.getByText(/11222/i)).toBeInTheDocument();
   });
 
-  test("should show email", () => {
-    renderCardComponentWithProvider(cardProps);
+  test("email should exist", () => {
+    render(<Card {...cardProps} />);
 
-    expect(screen.getByText(/laith@hotmail.com/i)).toBeInTheDocument();
+    expect(screen.getByText(/email@gmail.com/i)).toBeInTheDocument();
   });
 
-  test("should show image with correct src", () => {
-    renderCardComponentWithProvider(cardProps);
-
+  //test if an image has been loaded properly
+  test("should should img with correct source", () => {
+    render(<Card {...cardProps} />);
+    //get img by alt text and compare with url
     expect(screen.getByAltText(/cute cat/i).src).toBe(cardProps.image.url);
   });
 
-  test("should show outlined heart", () => {
-    renderCardComponentWithProvider(cardProps);
+  test("should see outlined heart", () => {
+    render(<Card {...cardProps} />);
+    //query is for element that might not exist in the dom
 
     expect(screen.queryByAltText(/filled heart/i)).not.toBeInTheDocument();
     expect(screen.getByAltText(/outlined heart/i)).toBeInTheDocument();
   });
 
-  test("should show filled heart", () => {
-    renderCardComponentWithProvider({ ...cardProps, favoured: true });
-
+  test("should see filled hear", () => {
+    render(<Card {...cardProps} favoured={true} />);
     expect(screen.queryByAltText(/outlined heart/i)).not.toBeInTheDocument();
     expect(screen.getByAltText(/filled heart/i)).toBeInTheDocument();
   });
 
   test("should toggle heart status", () => {
-    renderCardComponentWithProvider(cardProps);
-
+    render(<Card {...cardProps} />);
     userEvents.click(screen.getByRole("button"));
-
     expect(screen.queryByAltText(/outlined heart/i)).not.toBeInTheDocument();
     expect(screen.getByAltText(/filled heart/i)).toBeInTheDocument();
 
