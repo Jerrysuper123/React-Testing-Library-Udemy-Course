@@ -16,8 +16,6 @@ const Pets = () => {
     fetchCats();
   }, []);
 
-  console.log(cats);
-
   return (
     <div className="container">
       <div className="app-container">
